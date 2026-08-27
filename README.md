@@ -13,6 +13,15 @@ multi-height `TreeGrafter` — exist only in Babel git master
 (https://github.com/rbouckaert/Babel), not the released package. See `build-babel.md`
 for how they were compiled against the installed jars.
 
+## Source tree set
+
+The pipeline reads `global-language-trees-6636-taxa.trees` (287M, not tracked here).
+Download and extract it from the `global-language-tree-pipeline` v2.0.0 release:
+
+```bash
+curl -L https://github.com/rbouckaert/global-language-tree-pipeline/releases/download/v2.0.0/global-language-trees-6636-taxa.tgz | tar xz
+```
+
 ## Running
 
 ```bash
@@ -57,7 +66,7 @@ names (via Babel `TreeRelab`) when producing summary trees; the Makefile does no
 ### Inputs
 | File | Role |
 |------|------|
-| `global-language-trees-6636-taxa.trees` | Source EDGE tree set, 6636 tips, bare glottocodes |
+| `global-language-trees-6636-taxa.trees` | Source EDGE tree set, 6636 tips, bare glottocodes; from [global-language-tree-pipeline v2.0.0](https://github.com/rbouckaert/global-language-tree-pipeline/releases/tag/v2.0.0) (see Source tree set) |
 | `glotto_graft_map.cfg` | Grafts for missing languages: `glottocode`, height, comma-separated attachment codes |
 | `glottocodes.dat` | The 982 glottocodes that have an associated society |
 | `glotto2society.dat` | `glottocode` → society, or `(xd..,xd..)` sub-tree of societies |
