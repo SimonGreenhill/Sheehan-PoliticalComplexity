@@ -26,13 +26,13 @@ curl -L https://github.com/rbouckaert/global-language-tree-pipeline/releases/dow
 
 ```bash
 make            # build grafted.trees
-make verify     # build, then check the taxon set matches dplace2.nxs
+make verify     # build, then check the taxon set matches grafted.trees.gz
 make clean      # remove intermediates and output
 ```
 
 Reproducibility note: `TaxonReplacer` randomises internal node heights with no seed,
-so a rebuild matches `dplace2.nxs` in taxa and topology but not byte-for-byte in
-branch lengths. `TreeGrafter` is seeded (`SEED=127` in the Makefile).
+so a rebuild matches the archived `grafted.trees.gz` in taxa and topology but not
+byte-for-byte in branch lengths. `TreeGrafter` is seeded (`SEED=127` in the Makefile).
 
 ## Pipeline
 
@@ -89,7 +89,8 @@ names (via Babel `TreeRelab`) when producing summary trees; the Makefile does no
 ### Reference
 | File | Role |
 |------|------|
-| `dplace2.nxs` | Result of the original `dplace.sh` run; `make verify` compares against it |
+| `grafted.trees.gz` | Archived canonical output; `make verify` compares a fresh build's taxon set against it |
+| `dplace2.nxs` | Result of the original `dplace.sh` run (historical reference) |
 
 
 ## Data availability

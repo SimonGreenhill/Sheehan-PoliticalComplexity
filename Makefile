@@ -75,16 +75,18 @@ grafted.trees: $(BUILD)/dplace2.trees
 	$(APP) Newick2Nexus -trees $(BUILD)/dplace2.trees -out $@
 
 # --- checks -----------------------------------------------------------------
-# verify taxon set: count + sorted labels must be identical to dplace2.nxs.
-verify: grafted.trees dplace2.nxs
-	@echo "reference: $$(grep -m1 ntax dplace2.nxs)"
+# verify taxon set: count + sorted labels of a fresh build must be identical to
+# the archived grafted.trees.gz (unpacked to a temp path to avoid clobbering).
+verify: grafted.trees grafted.trees.gz
+	@gunzip -c grafted.trees.gz > /tmp/grafted_ref.trees
+	@echo "reference: $$(grep -m1 ntax /tmp/grafted_ref.trees)"
 	@echo "built    : $$(grep -m1 ntax grafted.trees)"
-	@sed -n '/Taxlabels/,/;/p' dplace2.nxs | grep -oE 'xd[0-9a-z]+' | sort -u > /tmp/ref_taxa.txt
-	@sed -n '/Taxlabels/,/;/p' grafted.trees      | grep -oE 'xd[0-9a-z]+' | sort -u > /tmp/out_taxa.txt
+	@sed -n '/Taxlabels/,/;/p' /tmp/grafted_ref.trees | grep -oE 'xd[0-9a-z]+' | sort -u > /tmp/ref_taxa.txt
+	@sed -n '/Taxlabels/,/;/p' grafted.trees          | grep -oE 'xd[0-9a-z]+' | sort -u > /tmp/out_taxa.txt
 	@if diff -q /tmp/ref_taxa.txt /tmp/out_taxa.txt >/dev/null; then \
-		echo "OK: taxon set is identical to dplace2.nxs ($$(wc -l < /tmp/out_taxa.txt | tr -d ' ') taxa)"; \
+		echo "OK: taxon set is identical to grafted.trees.gz ($$(wc -l < /tmp/out_taxa.txt | tr -d ' ') taxa)"; \
 	else \
-		echo "MISMATCH: taxon set differs from dplace2.nxs"; \
+		echo "MISMATCH: taxon set differs from grafted.trees.gz"; \
 		diff /tmp/ref_taxa.txt /tmp/out_taxa.txt | head; exit 1; \
 	fi
 
