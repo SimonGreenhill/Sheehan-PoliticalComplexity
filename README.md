@@ -27,17 +27,21 @@ branch lengths. `TreeGrafter` is seeded (`SEED=127` in the Makefile).
 
 ## Pipeline
 
+Step 1 and the final output stay at the top level; steps 2–4 write their
+intermediates into `build/`.
+
 1. **Graft missing languages** — `TreeGrafter` adds 57 ancient, extinct, colonial and
    otherwise-missing languages onto the EDGE trees (`glotto_graft_map.cfg`) →
    `edge-grafted.trees`.
 2. **Drop languages with no society** — `TaxonFilter` keeps only the 982 glottocodes
-   listed in `glottocodes.dat` → `glotto.trees` → `glotto.nxs`.
+   listed in `glottocodes.dat` → `build/glotto.trees` → `build/glotto.nxs`.
 3. **Expand to societies** — `TaxonReplacer` replaces each language tip with its
    society sub-tree (`glotto2society.dat`) and dates the tips to their focal year
-   (`society_id-focal_year.tsv`) → `dplace.trees` → `dplace.nxs`.
+   (`society_id-focal_year.tsv`) → `build/dplace.trees` → `build/dplace.nxs`.
 4. **Fix xd1128** — `TaxonFilter` drops the mis-placed society xd1128 (keeping the
    1126 taxa in `xd1128-keep.dat`), then `TreeGrafter` grafts it back above xd1130 at
-   age 0.18 (`graft-xd1128.cfg`) → `dplace2.trees`.
+   age 0.18 (`build/graft-xd1128.cfg`) → `build/dplace2.trees`, then `Newick2Nexus`
+   writes the final `grafted.trees`.
 
 `soc2label.dat` / `label2soc.dat` support relabelling society ids to human-readable
 names (via Babel `TreeRelab`) when producing summary trees; the Makefile does not use them.
@@ -66,11 +70,11 @@ names (via Babel `TreeRelab`) when producing summary trees; the Makefile does no
 | File | Role |
 |------|------|
 | `edge-grafted.trees` | Step 1 output: EDGE + 57 grafted languages |
-| `glotto.trees` / `glotto.nxs` | Step 2 output: 982 language tips (Newick / Nexus) |
-| `dplace.trees` / `dplace.nxs` | Step 3 output: society tips, focal-year dated |
-| `graft-xd1128.cfg` | Generated one-line graft config for xd1128 |
-| `dplace-xd1128.trees` / `.nxs` | Step 4: xd1128 removed |
-| `dplace2.trees` | Step 4: xd1128 grafted back — the final tree set |
+| `build/glotto.trees` / `build/glotto.nxs` | Step 2 output: 982 language tips (Newick / Nexus) |
+| `build/dplace.trees` / `build/dplace.nxs` | Step 3 output: society tips, focal-year dated |
+| `build/graft-xd1128.cfg` | Generated one-line graft config for xd1128 |
+| `build/dplace-xd1128.trees` / `.nxs` | Step 4: xd1128 removed |
+| `build/dplace2.trees` | Step 4: xd1128 grafted back — the final tree set |
 | `grafted.trees` | The Makefile's built output (final tree set) |
 
 ### Reference

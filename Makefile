@@ -28,10 +28,15 @@ KEEP     := xd1128-keep.dat                          # societies to keep (all bu
 
 APP      := applauncher
 SEED     := 127                                      # seed for TreeGrafter steps
+# step 2-4 intermediates land here
+BUILD    := build
 
 
 .PHONY: all verify clean
 all: grafted.trees
+
+$(BUILD):
+	mkdir -p $@
 
 # Step 1: graft in ancient, extinct, colonial and otherwise missing languages
 #         (adds 57 taxa; lati1261 uses a sampled height, hence -seed)
@@ -39,35 +44,35 @@ edge-grafted.trees: $(SRC) $(GRAFTMAP)
 	$(APP) TreeGrafter -cfg $(GRAFTMAP) -tree $(SRC) -out $@ -seed $(SEED)
 
 # Step 2: drop taxa whose glotto-code has no associated society (leaves 982 taxa)
-glotto.trees: edge-grafted.trees $(GLOTTO)
+$(BUILD)/glotto.trees: edge-grafted.trees $(GLOTTO) | $(BUILD)
 	$(APP) TaxonFilter -subset $(GLOTTO) -trees edge-grafted.trees -out $@
 
-glotto.nxs: glotto.trees
-	$(APP) Newick2Nexus -trees glotto.trees -out $@
+$(BUILD)/glotto.nxs: $(BUILD)/glotto.trees
+	$(APP) Newick2Nexus -trees $(BUILD)/glotto.trees -out $@
 
 # Step 3: replace glottocode tips with society sub-trees and set tip dates to
 #         focal times for dplace societies
-dplace.trees: glotto.nxs $(G2S) $(FOCAL)
-	$(APP) TaxonReplacer -times $(FOCAL) -cfg $(G2S) -tree glotto.nxs -out $@ -maxTime 1.0
+$(BUILD)/dplace.trees: $(BUILD)/glotto.nxs $(G2S) $(FOCAL)
+	$(APP) TaxonReplacer -times $(FOCAL) -cfg $(G2S) -tree $(BUILD)/glotto.nxs -out $@ -maxTime 1.0
 
-dplace.nxs: dplace.trees
-	$(APP) Newick2Nexus -trees dplace.trees -out $@
+$(BUILD)/dplace.nxs: $(BUILD)/dplace.trees
+	$(APP) Newick2Nexus -trees $(BUILD)/dplace.trees -out $@
 
 # Step 4: remove xd1128 (mis-placed) then graft it back above xd1130 at age 0.18
-graft-xd1128.cfg:
+$(BUILD)/graft-xd1128.cfg: | $(BUILD)
 	printf 'xd1128\t0.18\txd1130\n' > $@
 
-dplace-xd1128.trees: dplace.nxs $(KEEP)
-	$(APP) TaxonFilter -subset $(KEEP) -trees dplace.nxs -out $@
+$(BUILD)/dplace-xd1128.trees: $(BUILD)/dplace.nxs $(KEEP)
+	$(APP) TaxonFilter -subset $(KEEP) -trees $(BUILD)/dplace.nxs -out $@
 
-dplace-xd1128.nxs: dplace-xd1128.trees
-	$(APP) Newick2Nexus -trees dplace-xd1128.trees -out $@
+$(BUILD)/dplace-xd1128.nxs: $(BUILD)/dplace-xd1128.trees
+	$(APP) Newick2Nexus -trees $(BUILD)/dplace-xd1128.trees -out $@
 
-dplace2.trees: dplace-xd1128.nxs graft-xd1128.cfg
-	$(APP) TreeGrafter -cfg graft-xd1128.cfg -tree dplace-xd1128.nxs -out $@ -minTime 1.0 -seed $(SEED)
+$(BUILD)/dplace2.trees: $(BUILD)/dplace-xd1128.nxs $(BUILD)/graft-xd1128.cfg
+	$(APP) TreeGrafter -cfg $(BUILD)/graft-xd1128.cfg -tree $(BUILD)/dplace-xd1128.nxs -out $@ -minTime 1.0 -seed $(SEED)
 
-$(OUT): dplace2.trees
-	$(APP) Newick2Nexus -trees dplace2.trees -out $@
+grafted.trees: $(BUILD)/dplace2.trees
+	$(APP) Newick2Nexus -trees $(BUILD)/dplace2.trees -out $@
 
 # --- checks -----------------------------------------------------------------
 # verify taxon set: count + sorted labels must be identical to dplace2.nxs.
@@ -84,6 +89,5 @@ verify: grafted.trees dplace2.nxs
 	fi
 
 clean:
-	rm -f edge-grafted.trees glotto.trees glotto.nxs \
-	      dplace.trees dplace.nxs graft-xd1128.cfg \
-	      dplace-xd1128.trees dplace-xd1128.nxs dplace2.trees grafted.trees
+	rm -rf $(BUILD)
+	rm -f edge-grafted.trees grafted.trees
