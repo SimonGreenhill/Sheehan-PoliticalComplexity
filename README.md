@@ -83,6 +83,10 @@ names (via Babel `TreeRelab`) when producing summary trees; the Makefile does no
 | `dplace2.nxs` | Result of the original `dplace.sh` run; `make verify` compares against it |
 
 
+## Data availability
+
+The final tree set is archived here as `grafted.trees.gz`; decompress with `gunzip -k grafted.trees.gz`.
+
 ## AI Disclosure
 
 Claude Opus 4.8 was used to construct the Makefile pipeline for reproducibility only. All other code and scripts were human created.
