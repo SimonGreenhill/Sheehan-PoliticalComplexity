@@ -103,5 +103,9 @@ ENV/
 
 # Generated tree files (rebuild with `make`)
 build/
-edge-grafted.trees
 grafted.trees
+
+
+.claude
+.remember
+.tmp

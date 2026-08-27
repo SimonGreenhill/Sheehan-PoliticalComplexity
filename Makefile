@@ -40,12 +40,12 @@ $(BUILD):
 
 # Step 1: graft in ancient, extinct, colonial and otherwise missing languages
 #         (adds 57 taxa; lati1261 uses a sampled height, hence -seed)
-edge-grafted.trees: $(SRC) $(GRAFTMAP)
+$(BUILD)/edge-grafted.trees: $(SRC) $(GRAFTMAP) | $(BUILD)
 	$(APP) TreeGrafter -cfg $(GRAFTMAP) -tree $(SRC) -out $@ -seed $(SEED)
 
 # Step 2: drop taxa whose glotto-code has no associated society (leaves 982 taxa)
-$(BUILD)/glotto.trees: edge-grafted.trees $(GLOTTO) | $(BUILD)
-	$(APP) TaxonFilter -subset $(GLOTTO) -trees edge-grafted.trees -out $@
+$(BUILD)/glotto.trees: $(BUILD)/edge-grafted.trees $(GLOTTO)
+	$(APP) TaxonFilter -subset $(GLOTTO) -trees $(BUILD)/edge-grafted.trees -out $@
 
 $(BUILD)/glotto.nxs: $(BUILD)/glotto.trees
 	$(APP) Newick2Nexus -trees $(BUILD)/glotto.trees -out $@
@@ -90,4 +90,4 @@ verify: grafted.trees dplace2.nxs
 
 clean:
 	rm -rf $(BUILD)
-	rm -f edge-grafted.trees grafted.trees
+	rm -f grafted.trees

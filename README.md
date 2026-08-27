@@ -27,12 +27,12 @@ branch lengths. `TreeGrafter` is seeded (`SEED=127` in the Makefile).
 
 ## Pipeline
 
-Step 1 and the final output stay at the top level; steps 2–4 write their
-intermediates into `build/`.
+All intermediates are written into `build/`; only the final `grafted.trees` lands
+at the top level.
 
 1. **Graft missing languages** — `TreeGrafter` adds 57 ancient, extinct, colonial and
    otherwise-missing languages onto the EDGE trees (`glotto_graft_map.cfg`) →
-   `edge-grafted.trees`.
+   `build/edge-grafted.trees`.
 2. **Drop languages with no society** — `TaxonFilter` keeps only the 982 glottocodes
    listed in `glottocodes.dat` → `build/glotto.trees` → `build/glotto.nxs`.
 3. **Expand to societies** — `TaxonReplacer` replaces each language tip with its
@@ -69,7 +69,7 @@ names (via Babel `TreeRelab`) when producing summary trees; the Makefile does no
 ### Generated (removed by `make clean`)
 | File | Role |
 |------|------|
-| `edge-grafted.trees` | Step 1 output: EDGE + 57 grafted languages |
+| `build/edge-grafted.trees` | Step 1 output: EDGE + 57 grafted languages |
 | `build/glotto.trees` / `build/glotto.nxs` | Step 2 output: 982 language tips (Newick / Nexus) |
 | `build/dplace.trees` / `build/dplace.nxs` | Step 3 output: society tips, focal-year dated |
 | `build/graft-xd1128.cfg` | Generated one-line graft config for xd1128 |
