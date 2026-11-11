@@ -1,0 +1,45 @@
+{
+  "title": "Sheehan-PoliticalComplexity: dated posterior tree set of D-PLACE societies",
+  "upload_type": "dataset",
+  "description": "<p>A dated posterior tree set of D-PLACE societies, built from the global-language EDGE phylogeny (global-language-tree-pipeline v2.0.0). The EDGE trees are indexed by Glottolog codes. The pipeline grafts in 57 ancient, extinct, colonial and otherwise missing languages, retains the 982 languages that map to a D-PLACE society, expands each language tip into its societies, and dates society tips to their focal year. The final tree set is provided as <code>grafted.trees.gz</code>. The <code>xml/</code> directory contains BEAST2 XML files for nested-sampling comparison of alternative models.</p><p>The build requires BEAST2 with the Babel package. <code>TaxonReplacer</code> and the multi-height <code>TreeGrafter</code> are available only in Babel git master (see <code>build-babel.md</code>). <code>TaxonReplacer</code> randomises internal node heights without a seed, so a rebuild reproduces the archived taxa and topology but not the exact branch lengths.</p>",
+  "creators": [
+    {
+      "name": "Greenhill, Simon J.",
+      "affiliation": "University of Auckland",
+      "orcid": "0000-0001-7832-6156"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "keywords": [
+    "phylogenetics",
+    "language phylogeny",
+    "D-PLACE",
+    "Glottolog",
+    "BEAST2",
+    "political complexity",
+    "cultural evolution"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/SimonGreenhill/Sheehan-PoliticalComplexity",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/rbouckaert/global-language-tree-pipeline/releases/tag/v2.0.0",
+      "relation": "isDerivedFrom",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://d-place.org",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/rbouckaert/Babel",
+      "relation": "requires",
+      "scheme": "url"
+    }
+  ]
+}
