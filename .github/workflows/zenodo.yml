@@ -1,0 +1,31 @@
+# .github/workflows/zenodo.yml
+# Archives each published GitHub release on Zenodo via the REST API,
+# bypassing the Zenodo-GitHub webhook integration.
+
+name: Archive release on Zenodo
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  zenodo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Zenodo deposition
+        uses: zenodraft/action@0.13.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_ACCESS_TOKEN }}
+          ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_ACCESS_TOKEN }}
+        with:
+          metadata: .zenodo.json
+          # After the first record is published, set this to the concept ID
+          # (the number at the end of the "Cite all versions" DOI) so that
+          # later releases become new versions of the same record.
+          # Sandbox and production concept IDs differ.
+          # concept: 1234567
+          publish: false    # leave as a draft for review; set true once trusted
+          sandbox: true     # set false for production Zenodo
