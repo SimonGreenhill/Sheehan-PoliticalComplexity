@@ -28,4 +28,4 @@ jobs:
           # Sandbox and production concept IDs differ.
           # concept: 1234567
           publish: false    # leave as a draft for review; set true once trusted
-          sandbox: true     # set false for production Zenodo
+          sandbox: false    # set false for production Zenodo
